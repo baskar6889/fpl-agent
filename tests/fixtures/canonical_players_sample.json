@@ -1,0 +1,40 @@
+{
+  "players": [
+    {
+      "player_id": 101,
+      "player_name": "Keeper",
+      "team_id": 1,
+      "team_name": "Team One",
+      "position": "GK",
+      "price": 4.5,
+      "total_points": 90,
+      "minutes": 1800,
+      "status": "a",
+      "chance_of_playing_next_round": 50
+    },
+    {
+      "player_id": 202,
+      "player_name": "Midfielder",
+      "team_id": 2,
+      "team_name": "Team Two",
+      "position": "MID",
+      "price": 7.3,
+      "total_points": 120,
+      "minutes": 1800,
+      "status": "a",
+      "chance_of_playing_next_round": null
+    },
+    {
+      "player_id": 303,
+      "player_name": "Unused",
+      "team_id": 1,
+      "team_name": "Team One",
+      "position": "FWD",
+      "price": 5.0,
+      "total_points": 0,
+      "minutes": 0,
+      "status": "a",
+      "chance_of_playing_next_round": 0
+    }
+  ]
+}

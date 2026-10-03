@@ -1,0 +1,17 @@
+﻿ID,Category,Request,Decision,ExpectedSkill,ExpectedPosition,ExpectedMaxPrice,ExpectedTopN,ExpectedOutcome
+G001,Valid,Top midfielders,INVOKE_SKILL,rank_players,MID,,5,RANKING_SUCCESS
+G002,Valid,Top defenders,INVOKE_SKILL,rank_players,DEF,,5,RANKING_SUCCESS
+G003,Valid,Top forwards,INVOKE_SKILL,rank_players,FWD,,5,RANKING_SUCCESS
+G004,Parameters,Midfielders under £7.5m,INVOKE_SKILL,rank_players,MID,7.5,5,RANKING_SUCCESS
+G005,Parameters,Top 3 defenders,INVOKE_SKILL,rank_players,DEF,,3,RANKING_SUCCESS
+G006,Parameters,Top 5 forwards under £8m,INVOKE_SKILL,rank_players,FWD,8,5,RANKING_SUCCESS
+G007,Parameters,Projected midfielders up to £6.5m,INVOKE_SKILL,rank_players,MID,6.5,5,RANKING_SUCCESS
+G008,Boundary,Build best XI,REJECT,,,,,OUT_OF_SCOPE
+G009,Boundary,Transfer in,REJECT,,,,,OUT_OF_SCOPE
+G010,Boundary,Captain recommendation,REJECT,,,,,OUT_OF_SCOPE
+G011,Boundary,Six-gameweek squad,REJECT,,,,,OUT_OF_SCOPE
+G012,Invalid,Top midfielders under -£5m,INVOKE_SKILL,rank_players,MID,-5,5,INVALID_PRICE
+G013,Invalid,Give me the top 100 midfielders,INVOKE_SKILL,rank_players,MID,,100,INVALID_TOP_N
+G014,Invalid,Top goalkeepers,INVOKE_SKILL,rank_players,GK,,5,INVALID_POSITION
+G015,Ambiguous,Good players,CLARIFY,,,,,CLARIFICATION_REQUIRED
+G016,Ambiguous,Top 5 under £7m,CLARIFY,,,7,5,CLARIFICATION_REQUIRED

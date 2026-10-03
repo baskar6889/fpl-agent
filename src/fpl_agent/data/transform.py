@@ -7,15 +7,25 @@ from typing import Any
 POSITION_BY_ID = {1: "GK", 2: "DEF", 3: "MID", 4: "FWD"}
 
 
-def transform_bootstrap(payload: dict[str, Any]) -> dict[str, list[dict[str, Any]]]:
-    """Join elements to teams and emit canonical player fields."""
+def transform_bootstrap(payload: dict[str, Any]) -> dict[str, Any]:
+    """Join elements to teams and carry elapsed Gameweek metadata."""
     try:
         elements = payload["elements"]
         teams = payload["teams"]
+        events = payload["events"]
     except (KeyError, TypeError) as exc:
-        raise ValueError("Bootstrap payload must contain elements and teams") from exc
+        raise ValueError("Bootstrap payload must contain elements, teams, and events") from exc
     if not isinstance(elements, list) or not isinstance(teams, list):
         raise ValueError("Bootstrap elements and teams must be lists")
+    if not isinstance(events, list):
+        raise ValueError("Bootstrap events must be a list")
+
+    gameweeks_elapsed = 0
+    for event in events:
+        if not isinstance(event, dict):
+            raise ValueError("Each event must be an object")
+        if event.get("finished") is True or event.get("is_current") is True:
+            gameweeks_elapsed += 1
 
     team_names: dict[int, str] = {}
     for team in teams:
@@ -48,4 +58,4 @@ def transform_bootstrap(payload: dict[str, Any]) -> dict[str, list[dict[str, Any
             )
         except (KeyError, TypeError, ValueError) as exc:
             raise ValueError(f"Invalid FPL player record: {element!r}") from exc
-    return {"players": players}
+    return {"players": players, "gameweeks_elapsed": gameweeks_elapsed}

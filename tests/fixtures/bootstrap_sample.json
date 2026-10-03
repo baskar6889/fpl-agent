@@ -23,6 +23,12 @@
       "chance_of_playing_next_round": null
     }
   ],
+  "events": [
+    {"id": 1, "finished": true, "is_current": false, "is_next": false},
+    {"id": 2, "finished": false, "is_current": true, "is_next": false},
+    {"id": 3, "finished": false, "is_current": false, "is_next": true},
+    {"id": 4, "finished": true, "is_current": true, "is_next": false}
+  ],
   "teams": [
     {"id": 1, "name": "Team One"},
     {"id": 2, "name": "Team Two"}

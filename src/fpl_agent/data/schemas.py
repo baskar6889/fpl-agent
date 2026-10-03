@@ -24,3 +24,4 @@ class CanonicalDataset(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     players: list[CanonicalPlayer]
+    gameweeks_elapsed: int = Field(default=0, ge=0)

@@ -34,6 +34,7 @@ def test_transform_joins_team_maps_position_and_converts_price(bootstrap_payload
     assert result["players"][1]["position"] == "MID"
     assert result["players"][1]["price"] == 7.3
     assert result["players"][1]["chance_of_playing_next_round"] is None
+    assert result["gameweeks_elapsed"] == 3
 
 
 def test_schema_rejects_unknown_fields(bootstrap_payload):
@@ -59,3 +60,15 @@ def test_pipeline_writes_raw_and_validated_curated_json(tmp_path, bootstrap_payl
     assert output.parent == curated_dir
     result = CanonicalDataset.model_validate_json(output.read_text(encoding="utf-8"))
     assert len(result.players) == 2
+
+
+def test_finished_and_current_event_is_counted_once(bootstrap_payload):
+    bootstrap_payload["events"] = [
+        {"id": 1, "finished": True, "is_current": True, "is_next": False},
+        {"id": 2, "finished": False, "is_current": True, "is_next": False},
+        {"id": 3, "finished": False, "is_current": False, "is_next": True},
+    ]
+
+    result = transform_bootstrap(bootstrap_payload)
+
+    assert result["gameweeks_elapsed"] == 2

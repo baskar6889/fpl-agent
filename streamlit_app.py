@@ -1,8 +1,7 @@
-﻿"""Small session-only Streamlit chat UI for the FPL ranking agent."""
+"""Small session-only Streamlit chat UI for the FPL ranking agent."""
 
 from __future__ import annotations
 
-import os
 import sys
 from pathlib import Path
 
@@ -10,32 +9,18 @@ import streamlit as st
 
 ROOT = Path(__file__).resolve().parent
 SRC = ROOT / "src"
-CURATED_DIR = ROOT / "data" / "curated"
 RAW_DIR = ROOT / "data" / "raw"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
-from fpl_agent.agents import OpenAIResponsesProvider, RankingAgent
-from fpl_agent.data.schemas import CanonicalDataset
-from fpl_agent.projections.baseline import BaselineV1
-
-
-def _newest_curated_file() -> Path | None:
-    candidates = list(CURATED_DIR.glob("players-*.json"))
-    return max(candidates, key=lambda path: path.name) if candidates else None
+from fpl_agent.agents import RankingAgent
+from fpl_agent.application import build_backend, refresh_backend
 
 
 def _build_agent_from_latest() -> tuple[RankingAgent, Path]:
-    data_path = _newest_curated_file()
-    if data_path is None:
-        raise FileNotFoundError("No curated players-*.json dataset was found.")
-
-    dataset = CanonicalDataset.model_validate_json(data_path.read_text(encoding="utf-8"))
-    model = os.environ.get("OPENAI_MODEL", "").strip()
-    if not model:
-        raise ValueError("Set OPENAI_MODEL to use the OpenAI agent provider.")
-    provider = OpenAIResponsesProvider(model=model)
-    return RankingAgent(dataset, BaselineV1(), provider), data_path
+    backend = build_backend(require_agent=True)
+    assert backend.agent is not None
+    return backend.agent, backend.dataset_path
 
 
 def _clear_agent_state() -> None:
@@ -82,12 +67,10 @@ with st.sidebar:
         st.session_state.startup_error = None
         try:
             with st.status("Refreshing FPL data…", expanded=False) as status:
-                from fpl_agent.data.pipeline import run_pipeline
-
-                run_pipeline(raw_dir=RAW_DIR, curated_dir=CURATED_DIR)
-                agent, data_path = _build_agent_from_latest()
-                st.session_state.agent = agent
-                st.session_state.dataset_path = str(data_path)
+                backend = refresh_backend(raw_dir=RAW_DIR, require_agent=True)
+                assert backend.agent is not None
+                st.session_state.agent = backend.agent
+                st.session_state.dataset_path = str(backend.dataset_path)
                 st.session_state.startup_error = None
                 status.update(label="FPL data refreshed.", state="complete")
         except Exception as exc:

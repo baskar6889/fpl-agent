@@ -3,3 +3,5 @@ pydantic
 pytest
 openai>=1.75.0
 streamlit
+fastapi
+uvicorn
